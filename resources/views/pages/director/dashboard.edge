@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tableau de bord - Direction | GSM Cams</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-neutral-50 min-h-screen flex antialiased">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-neutral-900 text-white p-6 flex flex-col justify-between border-r border-neutral-800">
+    <div>
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-purple-900/30">
+          GSM
+        </div>
+        <div>
+          <h1 class="font-bold text-sm tracking-wide text-neutral-100">GSM Cams</h1>
+          <p class="text-xs text-neutral-400">Espace Direction</p>
+        </div>
+      </div>
+
+      <nav class="space-y-1.5 text-sm font-medium">
+        <a href="/directeur/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-neutral-800 text-white font-semibold shadow-sm transition">
+          <span>🏠 Tableau de bord</span>
+        </a>
+        <a href="/directeur/teachers" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-800/60 text-neutral-400 hover:text-white transition">
+          <span>👨‍🏫 Corps Enseignant</span>
+        </a>
+        <a href="/directeur/students" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-800/60 text-neutral-400 hover:text-white transition">
+          <span>🎓 Suivi Élèves</span>
+        </a>
+        <a href="/directeur/reports" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-800/60 text-neutral-400 hover:text-white transition">
+          <span>📊 Rapports & Notes</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="pt-4 border-t border-neutral-800">
+      <form action="/logout" method="POST">
+        {{ csrfField() }}
+        <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-950/40 text-red-400 hover:text-red-300 font-semibold transition text-sm">
+          <span>🚪 Déconnexion</span>
+        </button>
+      </form>
+    </div>
+  </aside>
+
+  <!-- Contenu Principal -->
+  <main class="flex-1 p-8 overflow-y-auto">
+    <header class="flex justify-between items-center mb-8">
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight text-neutral-900">Tableau de bord</h2>
+        <p class="text-sm text-neutral-500 mt-1">Pilotez et suivez les activités de l'établissement en temps réel.</p>
+      </div>
+      <div class="flex items-center gap-3 bg-white px-4 py-2 rounded-2xl border border-neutral-200 shadow-sm text-sm">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="font-medium text-neutral-700">Système opérationnel</span>
+      </div>
+    </header>
+
+    <!-- Cartes de statistiques -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-neutral-200/80 hover:border-purple-200 transition group">
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-xs font-bold uppercase tracking-wider text-neutral-400">Total Élèves</span>
+          <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition">
+            🎓
+          </div>
+        </div>
+        <p class="text-3xl font-extrabold text-neutral-900">{{ stats.students }}</p>
+        <p class="text-xs text-neutral-400 mt-2">Inscrits pour l'année en cours</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-neutral-200/80 hover:border-purple-200 transition group">
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-xs font-bold uppercase tracking-wider text-neutral-400">Total Enseignants</span>
+          <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition">
+            👨‍🏫
+          </div>
+        </div>
+        <p class="text-3xl font-extrabold text-neutral-900">{{ stats.teachers }}</p>
+        <p class="text-xs text-neutral-400 mt-2">Corps professoral actif</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-neutral-200/80 hover:border-purple-200 transition group">
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-xs font-bold uppercase tracking-wider text-neutral-400">Classes Ouvertes</span>
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition">
+            🏫
+          </div>
+        </div>
+        <p class="text-3xl font-extrabold text-neutral-900">{{ stats.classes }}</p>
+        <p class="text-xs text-neutral-400 mt-2">Salles et filières gérées</p>
+      </div>
+    </div>
+
+    <!-- Section Raccourcis / Actions rapides -->
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-neutral-200">
+      <h3 class="font-bold text-base text-neutral-900 mb-2">Accès Rapide & Actions</h3>
+      <p class="text-sm text-neutral-500 mb-6">Sélectionnez une section ci-dessous pour gérer les différents aspects pédagogiques.</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <a href="/directeur/teachers" class="p-4 rounded-xl border border-neutral-100 bg-neutral-50 hover:bg-purple-50/50 hover:border-purple-200 transition block">
+          <p class="font-semibold text-neutral-900 text-sm mb-1">Voir les enseignants →</p>
+          <p class="text-xs text-neutral-500">Consulter les attributions de cours par professeur.</p>
+        </a>
+        <a href="/directeur/students" class="p-4 rounded-xl border border-neutral-100 bg-neutral-50 hover:bg-purple-50/50 hover:border-purple-200 transition block">
+          <p class="font-semibold text-neutral-900 text-sm mb-1">Registre des élèves →</p>
+          <p class="text-xs text-neutral-500">Vérifier les inscriptions et listes de classe.</p>
+        </a>
+        <a href="/directeur/reports" class="p-4 rounded-xl border border-neutral-100 bg-neutral-50 hover:bg-purple-50/50 hover:border-purple-200 transition block">
+          <p class="font-semibold text-neutral-900 text-sm mb-1">Rapports de notes →</p>
+          <p class="text-xs text-neutral-500">Analyser les performances scolaires globales.</p>
+        </a>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,197 @@
+@component('components/layout', { title: 'Inscription - GSM Cams' })
+
+  <div class="min-h-[85vh] grid grid-cols-1 lg:grid-cols-2 bg-white rounded-3xl border border-neutral-200 overflow-hidden shadow-sm my-4">
+
+    <!-- Colonne de gauche : Branding & Contexte -->
+    <div class="relative hidden lg:flex flex-col justify-between p-12 bg-neutral-900 text-white overflow-hidden">
+      <div class="absolute inset-0 z-0">
+        <img
+          src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1200&auto=format&fit=crop"
+          alt="GSM Cams"
+          class="w-full h-full object-cover opacity-40 mix-blend-luminosity"
+        >
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+      </div>
+
+      <div class="relative z-10 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center font-bold text-xl shadow-md">
+          🏫
+        </div>
+        <span class="font-extrabold text-white tracking-tight text-xl">GSM Cams</span>
+      </div>
+
+      <div class="relative z-10 max-w-md">
+        <h1 class="text-4xl font-black tracking-tight leading-tight mb-4">
+          Portail Numérique Officiel.
+        </h1>
+        <p class="text-neutral-300 text-sm leading-relaxed">
+          Espace sécurisé d'inscription et de suivi pédagogique pour l'établissement. Rejoignez votre parcours adapté.
+        </p>
+      </div>
+    </div>
+
+    <!-- Colonne de droite : Formulaire dynamique -->
+    <div class="flex flex-col justify-center px-6 sm:px-10 lg:px-12 py-10">
+
+      <div class="mb-6">
+        <h2 class="text-2xl font-black text-black tracking-tight">Créer un compte</h2>
+        <p class="text-neutral-500 text-sm mt-1">Renseignez vos informations institutionnelles.</p>
+      </div>
+
+      <form action="/signup" method="POST" class="space-y-4">
+        {{ csrfField() }}
+        @if(flashMessages.has('errors'))
+  <div class="p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl text-xs space-y-1">
+    <p class="font-bold">Oups ! Validation échouée :</p>
+    <ul class="list-disc pl-4">
+      {{-- Si les erreurs sont sous forme de tableau simple ou d'objet --}}
+      @if(Array.isArray(flashMessages.get('errors')))
+        @each(error in flashMessages.get('errors'))
+          <li>{{ error.message || error }}</li>
+        @end
+      @else
+        {{-- Si les erreurs sont un objet de type { champ: [messages] } --}}
+        @each((messages, field) in flashMessages.get('errors'))
+          <li><strong>{{ field }}</strong> : {{ messages[0] }}</li>
+        @end
+      @endif
+    </ul>
+  </div>
+@endif
+
+        <!-- Choix du Rôle (Pilote l'affichage des champs spécifiques) -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-2">Sélectionnez votre profil</label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <label class="flex items-center justify-center p-2.5 text-xs font-semibold border border-neutral-200 rounded-xl cursor-pointer hover:border-black transition has-[:checked]:bg-black has-[:checked]:text-white has-[:checked]:border-black">
+              <input type="radio" name="role" value="eleve" checked class="hidden" onchange="toggleRoleFields('eleve')">
+              <span>Élève</span>
+            </label>
+            <label class="flex items-center justify-center p-2.5 text-xs font-semibold border border-neutral-200 rounded-xl cursor-pointer hover:border-black transition has-[:checked]:bg-black has-[:checked]:text-white has-[:checked]:border-black">
+              <input type="radio" name="role" value="enseignant" class="hidden" onchange="toggleRoleFields('enseignant')">
+              <span>Enseignant</span>
+            </label>
+           <label class="flex items-center justify-center p-2.5 text-xs font-semibold border border-neutral-200 rounded-xl cursor-pointer hover:border-black transition has-[:checked]:bg-black has-[:checked]:text-white has-[:checked]:border-black">
+  <input type="radio" name="role" value="prefect" class="hidden" onchange="toggleRoleFields('prefect')">
+  <span>Préfet</span>
+</label>
+            <label class="flex items-center justify-center p-2.5 text-xs font-semibold border border-neutral-200 rounded-xl cursor-pointer hover:border-black transition has-[:checked]:bg-black has-[:checked]:text-white has-[:checked]:border-black">
+              <input type="radio" name="role" value="directeur" class="hidden" onchange="toggleRoleFields('directeur')">
+              <span>Directeur</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Informations Générales Communes -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+  <div>
+    <label for="fullName" class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">Nom complet</label>
+    <input type="text" id="fullName" name="fullName" placeholder="Nom et Prénom" required class="w-full bg-neutral-50 border border-neutral-200 focus:border-black focus:bg-white text-sm rounded-xl px-3.5 py-2.5 transition outline-none">
+  </div>
+  <div>
+    <label for="email" class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">Adresse Email</label>
+    <input type="email" id="email" name="email" placeholder="email@domain.com" required class="w-full bg-neutral-50 border border-neutral-200 focus:border-black focus:bg-white text-sm rounded-xl px-3.5 py-2.5 transition outline-none">
+  </div>
+</div>
+
+        <!-- CHAMPS SPÉCIFIQUES : ÉLÈVE -->
+        <div id="fields-eleve" class="role-fields space-y-3 p-4 bg-neutral-50 rounded-2xl border border-neutral-200">
+          <p class="text-xs font-bold text-red-600 uppercase tracking-wider">Informations Scolaires (Élève)</p>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs text-neutral-600 mb-1">Classe</label>
+              <input type="text" name="classe" placeholder="ex: 5ème Math-Physique" class="w-full bg-white border border-neutral-200 text-sm rounded-xl px-3 py-2 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs text-neutral-600 mb-1">Âge</label>
+              <input type="number" name="age" placeholder="ex: 16" class="w-full bg-white border border-neutral-200 text-sm rounded-xl px-3 py-2 outline-none">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs text-neutral-600 mb-1">Section / Humanité</label>
+              <input type="text" name="section" placeholder="ex: Secondaire / Technique" class="w-full bg-white border border-neutral-200 text-sm rounded-xl px-3 py-2 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs text-neutral-600 mb-1">Option</label>
+              <input type="text" name="option" placeholder="ex: Commerciale, Biologie..." class="w-full bg-white border border-neutral-200 text-sm rounded-xl px-3 py-2 outline-none">
+            </div>
+          </div>
+        </div>
+        <!-- Ajout dans le formulaire d'inscription, sous les informations de contact -->
+
+<!-- Année Scolaire (À charger depuis la BDD) -->
+<div class="mt-4">
+  <label class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-2">Année scolaire en cours</label>
+  <select name="school_year_id" required class="w-full bg-neutral-50 border border-neutral-200 focus:border-black text-sm rounded-xl px-3.5 py-2.5 outline-none">
+    <option value="1">2026-2027</option>
+    <!-- Tu devras boucler sur tes années scolaires ici : @each(year in schoolYears) ... -->
+  </select>
+</div>
+
+        <!-- CHAMPS SPÉCIFIQUES : ENSEIGNANT -->
+        <div id="fields-enseignant" class="role-fields space-y-3 p-4 bg-neutral-50 rounded-2xl border border-neutral-200 hidden">
+          <p class="text-xs font-bold text-red-600 uppercase tracking-wider">Informations Pédagogiques (Enseignant)</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs text-neutral-600 mb-1">Cours dispensés</label>
+              <input type="text" name="cours" placeholder="ex: Mathématiques, Informatique" class="w-full bg-white border border-neutral-200 text-sm rounded-xl px-3 py-2 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs text-neutral-600 mb-1">Classes assignées</label>
+              <input type="text" name="classes_enseignant" placeholder="ex: 3ème, 4ème humanités" class="w-full bg-white border border-neutral-200 text-sm rounded-xl px-3 py-2 outline-none">
+            </div>
+          </div>
+        </div>
+
+        <!-- CHAMPS SPÉCIFIQUES : PRÉFET / DIRECTEUR -->
+        <div id="fields-admin" class="role-fields space-y-3 p-4 bg-neutral-50 rounded-2xl border border-neutral-200 hidden">
+          <p class="text-xs font-bold text-red-600 uppercase tracking-wider">Informations Administratives</p>
+          <div>
+            <label class="block text-xs text-neutral-600 mb-1">Département / Rôle de supervision</label>
+            <input type="text" name="departement" placeholder="ex: Direction des Études / Discipline" class="w-full bg-white border border-neutral-200 text-sm rounded-xl px-3 py-2 outline-none">
+          </div>
+        </div>
+
+        <!-- Mots de passe -->
+       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="password" class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">Mot de passe</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" required class="w-full bg-neutral-50 border border-neutral-200 focus:border-black focus:bg-white text-sm rounded-xl px-3.5 py-2.5 transition outline-none">
+          </div>
+          <div>
+            <label for="password_confirmation" class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">Confirmation</label>
+            <input type="password" id="password_confirmation" name="password_confirmation" placeholder="••••••••" required class="w-full bg-neutral-50 border border-neutral-200 focus:border-black focus:bg-white text-sm rounded-xl px-3.5 py-2.5 transition outline-none">
+          </div>
+        </div>
+        <!-- Bouton -->
+        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-4 rounded-xl transition shadow-md flex items-center justify-center gap-2 text-sm tracking-wide mt-2">
+          <span>FINALISER L'INSCRIPTION</span>
+          <span>&rarr;</span>
+        </button>
+
+      </form>
+
+      <div class="text-center mt-6 pt-4 border-t border-neutral-100 text-sm text-neutral-600">
+        Déjà inscrit par le secrétariat ? <a href="/login" class="text-red-600 font-bold hover:underline">Se connecter</a>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Script simple pour basculer l'affichage des blocs selon le rôle choisi -->
+  <script>
+    function toggleRoleFields(role) {
+      document.querySelectorAll('.role-fields').forEach(el => el.classList.add('hidden'));
+      if (role === 'eleve') {
+        document.getElementById('fields-eleve').classList.remove('hidden');
+      } else if (role === 'enseignant') {
+        document.getElementById('fields-enseignant').classList.remove('hidden');
+      } else if (role === 'prefet' || role === 'directeur') {
+        document.getElementById('fields-admin').classList.remove('hidden');
+      }
+    }
+  </script>
+
+@end

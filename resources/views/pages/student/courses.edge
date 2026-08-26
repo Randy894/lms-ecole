@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mes Cours - GSM Cams</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-neutral-50 text-neutral-900 font-sans antialiased min-h-screen flex">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-white border-r border-neutral-200 hidden md:flex flex-col justify-between p-6">
+    <div>
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center font-bold text-lg shadow-md">GSM</div>
+        <div>
+          <h1 class="font-bold text-sm tracking-wide">GSM Cams</h1>
+          <p class="text-xs text-neutral-500">Espace Élève</p>
+        </div>
+      </div>
+      <nav class="space-y-1.5 text-sm font-medium">
+        <a href="/eleve/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition"><span>🏠 Tableau de bord</span></a>
+        <a href="/eleve/grades" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition"><span>📊 Mes Notes</span></a>
+        <a href="/eleve/assignments" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition"><span>📝 Devoirs & Tâches</span></a>
+        <a href="/eleve/courses" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 text-red-600 font-semibold transition"><span>📚 Mes Cours</span></a>
+        <a href="/eleve/schedule" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition"><span>📅 Emploi du temps</span></a>
+      </nav>
+    </div>
+    <div>
+      <form action="/logout" method="POST">
+        {{ csrfField() }}
+        <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 text-red-600 font-semibold transition text-sm"><span>🚪 Déconnexion</span></button>
+      </form>
+    </div>
+  </aside>
+
+  <!-- Contenu Principal -->
+  <main class="flex-1 p-8 overflow-y-auto">
+    <header class="mb-8">
+      <h2 class="text-2xl font-bold tracking-tight">Bibliothèque de Cours</h2>
+      <p class="text-sm text-neutral-500">Téléchargez les supports et documents pédagogiques mis en ligne.</p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @each(course in courses)
+        <div class="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center font-bold text-xs mb-4">PDF</div>
+            <h3 class="font-bold text-base text-neutral-800 mb-1">{{ course.title }}</h3>
+            <p class="text-xs text-neutral-500 mb-4">Professeur : {{ course.teacherName }}</p>
+          </div>
+          <a href="{{ course.downloadUrl }}" class="text-xs font-bold text-red-600 hover:underline">Télécharger le document &rarr;</a>
+        </div>
+      @endeach
+    </div>
+  </main>
+</body>
+</html>

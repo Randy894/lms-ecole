@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  --font-titan: 'Syne', 'Impact', sans-serif;
+
+}

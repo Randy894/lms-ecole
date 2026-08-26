@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Tableau de bord - Admin GSM Cams</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-neutral-50 min-h-screen flex">
+
+  <!-- Sidebar unifiée -->
+  <aside class="w-64 bg-neutral-900 text-white p-6 flex flex-col justify-between">
+    <div>
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-md">
+          GSM
+        </div>
+        <div>
+          <h1 class="font-bold text-sm tracking-wide">GSM Cams</h1>
+          <p class="text-xs text-neutral-400">Espace Administration</p>
+        </div>
+      </div>
+
+      <nav class="space-y-1.5 text-sm font-medium">
+        <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-neutral-800 text-white font-semibold transition">
+          <span>🏠 Tableau de bord</span>
+        </a>
+        <a href="/admin/users" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-800 text-neutral-400 transition">
+          <span>👥 Utilisateurs</span>
+        </a>
+        <a href="/admin/classes" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-800 text-neutral-400 transition">
+          <span>🏫 Classes</span>
+        </a>
+        <a href="/admin/enrollments" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-800 text-neutral-400 transition">
+          <span>📝 Inscriptions</span>
+        </a>
+        <a href="/admin/assignments" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-800 text-neutral-400 transition">
+          <span>📚 Attributions</span>
+        </a>
+      </nav>
+    </div>
+
+    <div>
+      <form action="/logout" method="POST">
+        {{ csrfField() }}
+        <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-950/50 text-red-400 font-semibold transition text-sm">
+          <span>🚪 Déconnexion</span>
+        </button>
+      </form>
+    </div>
+  </aside>
+
+  <!-- Contenu Principal -->
+  <main class="flex-1 p-8 overflow-y-auto">
+    <header class="mb-8">
+      <h2 class="text-2xl font-bold tracking-tight text-neutral-900">Tableau de bord</h2>
+      <p class="text-sm text-neutral-500">Vue d'ensemble des activités et statistiques de l'établissement.</p>
+    </header>
+
+    <!-- Cartes de statistiques -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-neutral-200">
+        <p class="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-1">Élèves Inscrits</p>
+        <p class="text-3xl font-extrabold text-neutral-900">{{ stats.students }}</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-neutral-200">
+        <p class="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-1">Enseignants</p>
+        <p class="text-3xl font-extrabold text-neutral-900">{{ stats.teachers }}</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-neutral-200">
+        <p class="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-1">Classes Actives</p>
+        <p class="text-3xl font-extrabold text-neutral-900">{{ stats.classes }}</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-neutral-200">
+        <p class="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-1">Total Utilisateurs</p>
+        <p class="text-3xl font-extrabold text-neutral-900">{{ stats.users }}</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-neutral-200">
+        <p class="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-1">Inscriptions Validées</p>
+        <p class="text-3xl font-extrabold text-neutral-900">{{ stats.enrollments }}</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-neutral-200">
+        <p class="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-1">Attributions Cours</p>
+        <p class="text-3xl font-extrabold text-neutral-900">{{ stats.assignments }}</p>
+      </div>
+    </div>
+
+    <!-- Section Activités récentes -->
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-neutral-200">
+      <h3 class="font-bold text-lg mb-4 text-neutral-900">Activité du système</h3>
+      <p class="text-sm text-neutral-500">Le système GSM Cams est opérationnel. Toutes les tables de la base de données sont synchronisées.</p>
+    </div>
+  </main>
+
+</body>
+</html>

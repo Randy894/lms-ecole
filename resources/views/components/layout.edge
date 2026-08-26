@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title || 'GSM Cams' }}</title>
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="bg-neutral-100 text-neutral-900 antialiased min-h-screen flex flex-col justify-between">
+
+
+
+  <main class="flex-grow">
+    {{{ await $slots.main() }}}
+  </main>
+
+  <footer class="text-center py-6 text-xs text-neutral-500 border-t border-neutral-200">
+    &copy; 2026 GSM Cams - Tous droits réservés.
+  </footer>
+
+</body>
+</html>

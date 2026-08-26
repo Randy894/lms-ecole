@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emploi du temps - GSM Cams</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-neutral-50 text-neutral-900 font-sans antialiased min-h-screen flex">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-white border-r border-neutral-200 hidden md:flex flex-col justify-between p-6">
+    <div>
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center font-bold text-lg shadow-md">GSM</div>
+        <div>
+          <h1 class="font-bold text-sm tracking-wide">GSM Cams</h1>
+          <p class="text-xs text-neutral-500">Espace Élève</p>
+        </div>
+      </div>
+      <nav class="space-y-1.5 text-sm font-medium">
+        <a href="/eleve/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition"><span>🏠 Tableau de bord</span></a>
+        <a href="/eleve/grades" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition"><span>📊 Mes Notes</span></a>
+        <a href="/eleve/assignments" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition"><span>📝 Devoirs & Tâches</span></a>
+        <a href="/eleve/courses" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition"><span>📚 Mes Cours</span></a>
+        <a href="/eleve/schedule" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 text-red-600 font-semibold transition"><span>📅 Emploi du temps</span></a>
+      </nav>
+    </div>
+    <div>
+      <form action="/logout" method="POST">
+        {{ csrfField() }}
+        <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 text-red-600 font-semibold transition text-sm"><span>🚪 Déconnexion</span></button>
+      </form>
+    </div>
+  </aside>
+
+  <!-- Contenu Principal -->
+  <main class="flex-1 p-8 overflow-y-auto">
+    <header class="mb-8">
+      <h2 class="text-2xl font-bold tracking-tight">Emploi du temps</h2>
+      <p class="text-sm text-neutral-500">Visualisez votre planning hebdomadaire de cours.</p>
+    </header>
+
+    <div class="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm overflow-x-auto">
+      <table class="w-full text-center border-collapse">
+        <thead>
+          <tr class="border-b border-neutral-200 text-xs font-bold uppercase tracking-wider text-neutral-400">
+            <th class="py-3 px-4">Heure</th>
+            <th class="py-3 px-4">Lundi</th>
+            <th class="py-3 px-4">Mardi</th>
+            <th class="py-3 px-4">Mercredi</th>
+            <th class="py-3 px-4">Jeudi</th>
+            <th class="py-3 px-4">Vendredi</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-neutral-100 text-sm">
+          @each(slot in scheduleSlots)
+            <tr class="hover:bg-neutral-50">
+              <td class="py-3 px-4 font-bold text-neutral-400">{{ slot.time }}</td>
+              <td class="py-3 px-4"><div class="bg-neutral-50 p-2 rounded-lg text-xs">{{ slot.monday || '-' }}</div></td>
+              <td class="py-3 px-4"><div class="bg-neutral-50 p-2 rounded-lg text-xs">{{ slot.tuesday || '-' }}</div></td>
+              <td class="py-3 px-4"><div class="bg-neutral-50 p-2 rounded-lg text-xs">{{ slot.wednesday || '-' }}</div></td>
+              <td class="py-3 px-4"><div class="bg-neutral-50 p-2 rounded-lg text-xs">{{ slot.thursday || '-' }}</div></td>
+              <td class="py-3 px-4"><div class="bg-neutral-50 p-2 rounded-lg text-xs">{{ slot.friday || '-' }}</div></td>
+            </tr>
+          @endeach
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>

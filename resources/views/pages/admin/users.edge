@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestion des Utilisateurs - Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-neutral-50 flex min-h-screen">
+  <aside class="w-64 bg-neutral-900 text-white p-6 flex flex-col justify-between">
+    <div>
+      <h1 class="font-bold text-lg mb-8">GSM Cams Admin</h1>
+      <nav class="space-y-3 text-sm">
+        <a href="/admin/dashboard" class="block py-2 px-3 rounded-lg hover:bg-neutral-800 text-neutral-400">🏠 Tableau de bord</a>
+        <a href="/admin/users" class="block py-2 px-3 rounded-lg bg-neutral-800 text-white font-semibold">👥 Utilisateurs</a>
+        <a href="/admin/classes" class="block py-2 px-3 rounded-lg hover:bg-neutral-800 text-neutral-400">🏫 Classes</a>
+        <a href="/admin/enrollments" class="block py-2 px-3 rounded-lg hover:bg-neutral-800 text-neutral-400">📝 Inscriptions</a>
+        <a href="/admin/assignments" class="block py-2 px-3 rounded-lg hover:bg-neutral-800 text-neutral-400">📚 Attributions</a>
+      </nav>
+    </div>
+    <div>
+      <form action="/logout" method="POST">
+        {{ csrfField() }}
+        <button type="submit" class="w-full text-left py-2 px-3 rounded-lg text-red-400 hover:bg-neutral-800 text-sm font-semibold">🚪 Déconnexion</button>
+      </form>
+    </div>
+  </aside>
+
+  <main class="flex-1 p-8">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-2xl font-bold mb-6">Liste de tous les utilisateurs</h2>
+
+      <div class="bg-white rounded-xl border border-neutral-200 overflow-hidden shadow-sm">
+        <table class="w-full text-sm text-left">
+          <thead class="bg-neutral-100 text-neutral-600 border-b border-neutral-200">
+            <tr>
+              <th class="p-4">Nom complet</th>
+              <th class="p-4">E-mail</th>
+              <th class="p-4">Rôle</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-neutral-100">
+            @each(u in users)
+            <tr>
+              <td class="p-4 font-semibold text-neutral-900">{{ u.fullName }}</td>
+              <td class="p-4 text-neutral-600">{{ u.email }}</td>
+              <td class="p-4">
+                <span class="px-3 py-1 bg-neutral-100 text-neutral-700 rounded-full text-xs font-bold uppercase">
+                  {{ u.role }}
+                </span>
+              </td>
+            </tr>
+            @endeach
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

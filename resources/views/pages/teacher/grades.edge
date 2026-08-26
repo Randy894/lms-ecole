@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Encodage des Notes - GSM Cams</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-neutral-50 text-neutral-900 font-sans antialiased min-h-screen flex">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-white border-r border-neutral-200 hidden md:flex flex-col justify-between p-6">
+    <div>
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center font-bold text-lg shadow-md">GSM</div>
+        <div>
+          <h1 class="font-bold text-sm tracking-wide">GSM Cams</h1>
+          <p class="text-xs text-neutral-500">Espace Enseignant</p>
+        </div>
+      </div>
+      <nav class="space-y-1.5 text-sm font-medium">
+        <a href="/enseignant/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition"><span>🏠 Tableau de bord</span></a>
+        <a href="/enseignant/courses" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition"><span>📚 Mes Cours</span></a>
+        <a href="/enseignant/assignments" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition"><span>📝 Devoirs & Tâches</span></a>
+        <a href="/enseignant/grades" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 text-red-600 font-semibold transition"><span>📊 Encodage des Notes</span></a>
+        <a href="/enseignant/attendances" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition"><span>👥 Présences</span></a>
+      </nav>
+    </div>
+    <div>
+      <form action="/logout" method="POST">
+        {{ csrfField() }}
+        <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 text-red-600 font-semibold transition text-sm"><span>🚪 Déconnexion</span></button>
+      </form>
+    </div>
+  </aside>
+
+  <!-- Contenu Principal -->
+  <main class="flex-1 p-8 overflow-y-auto">
+    <header class="flex justify-between items-center mb-8">
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight">Encodage des Notes</h2>
+        <p class="text-sm text-neutral-500">Saisissez et mettez à jour les notes des évaluations de vos classes.</p>
+      </div>
+      <a href="/enseignant/dashboard" class="text-xs bg-neutral-900 text-white px-4 py-2.5 rounded-xl font-medium hover:bg-neutral-800 transition shadow-sm">&larr; Retour</a>
+    </header>
+
+    <!-- Sélection de l'évaluation -->
+    <section class="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm mb-8">
+      <h3 class="text-lg font-bold mb-4">1. Choisir ou créer une évaluation</h3>
+
+      <form action="/enseignant/grades" method="GET" class="flex gap-4 items-end mb-6">
+        <div class="flex-1">
+          <label class="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1">Évaluation existante</label>
+          <select name="assessmentId" class="w-full px-3 py-2.5 rounded-xl border border-neutral-200 text-sm bg-white">
+            <option value="">-- Sélectionner une évaluation --</option>
+            @each(assessment in assessments)
+              <option value="{{ assessment.id }}" {{ assessmentId == assessment.id ? 'selected' : '' }}>
+                {{ assessment.title }} (Max: {{ assessment.maxScore }})
+              </option>
+            @endeach
+          </select>
+        </div>
+        <button type="submit" class="bg-neutral-900 text-white px-5 py-2.5 rounded-xl font-medium text-sm hover:bg-neutral-800">Charger la grille</button>
+      </form>
+
+      <hr class="border-neutral-100 my-6">
+
+      <h4 class="text-sm font-bold mb-3 text-neutral-700">Ou créer une nouvelle évaluation</h4>
+      <form action="/enseignant/grades/assessment" method="POST" class="grid grid-cols-1 sm:grid-cols-5 gap-3">
+        {{ csrfField() }}
+
+        <input type="text" name="title" placeholder="Titre (ex: Interro 1)" required class="px-3 py-2 rounded-xl border border-neutral-200 text-sm">
+
+        <input type="number" name="maxScore" placeholder="Note max (ex: 20)" required class="px-3 py-2 rounded-xl border border-neutral-200 text-sm">
+
+        <!-- Sélection de la classe (Données réelles) -->
+        <select name="classId" required class="px-3 py-2 rounded-xl border border-neutral-200 text-sm bg-white">
+          <option value="">-- Choisir la classe --</option>
+          @if(schoolClasses && schoolClasses.length > 0)
+            @each(sc in schoolClasses)
+              <option value="{{ sc.id }}">{{ sc.name }}</option>
+            @endeach
+          @else
+            <option value="" disabled>Aucune classe</option>
+          @endif
+        </select>
+
+        <!-- Sélection de la matière (Données réelles) -->
+        <select name="subjectId" required class="px-3 py-2 rounded-xl border border-neutral-200 text-sm bg-white">
+          <option value="">-- Choisir la matière --</option>
+          @if(subjects && subjects.length > 0)
+            @each(sub in subjects)
+              <option value="{{ sub.id }}">{{ sub.name }}</option>
+            @endeach
+          @else
+            <option value="" disabled>Aucune matière</option>
+          @endif
+        </select>
+
+        <button type="submit" class="bg-red-600 text-white font-semibold rounded-xl text-sm hover:bg-red-700 py-2">Créer</button>
+      </form>
+    </section>
+
+    @if(selectedAssessment)
+      <section class="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm">
+        <h3 class="text-lg font-bold mb-4">Saisie des notes pour : <span class="text-red-600">{{ selectedAssessment.title }}</span></h3>
+
+        <form action="/enseignant/grades" method="POST">
+          {{ csrfField() }}
+          <input type="hidden" name="assessmentId" value="{{ selectedAssessment.id }}">
+
+          <div class="overflow-x-auto mb-6">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-neutral-200 text-xs font-bold uppercase tracking-wider text-neutral-400">
+                  <th class="py-3 px-4">Élève</th>
+                  <th class="py-3 px-4 w-48">Note (/ {{ selectedAssessment.maxScore }})</th>
+                  <th class="py-3 px-4">Commentaire</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-neutral-100 text-sm">
+                @each(student in students)
+                  <tr class="hover:bg-neutral-50">
+                    <td class="py-3 px-4 font-semibold text-neutral-800">{{ student.user ? student.user.fullName : 'Élève #' + student.id }}</td>
+                    <td class="py-3 px-4">
+                      <input type="number" step="0.01" max="{{ selectedAssessment.maxScore }}" name="grades[{{ student.id }}][score]" value="{{ existingGrades[student.id] ? existingGrades[student.id].score : '' }}" class="w-full px-3 py-1.5 rounded-lg border border-neutral-200 text-sm font-bold text-red-600">
+                    </td>
+                    <td class="py-3 px-4">
+                      <input type="text" name="grades[{{ student.id }}][comment]" value="{{ existingGrades[student.id] ? (existingGrades[student.id].comment || '') : '' }}" placeholder="Remarque..." class="w-full px-3 py-1.5 rounded-lg border border-neutral-200 text-xs">
+                    </td>
+                  </tr>
+                @endeach
+              </tbody>
+            </table>
+          </div>
+
+          <button type="submit" class="bg-red-600 text-white font-semibold px-6 py-3 rounded-xl text-sm hover:bg-red-700 shadow-sm">Enregistrer toutes les notes</button>
+        </form>
+      </section>
+    @endif
+  </main>
+</body>
+</html>

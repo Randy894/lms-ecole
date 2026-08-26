@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tableau de bord - GSM Cams</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-neutral-50 text-neutral-900 font-sans antialiased min-h-screen flex">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-white border-r border-neutral-200 hidden md:flex flex-col justify-between p-6">
+    <div>
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center font-bold text-lg shadow-md">GSM</div>
+        <div>
+          <h1 class="font-bold text-sm tracking-wide">GSM Cams</h1>
+          <p class="text-xs text-neutral-500">Espace Élève</p>
+        </div>
+      </div>
+      <nav class="space-y-1.5 text-sm font-medium">
+        <a href="/eleve/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 text-red-600 font-semibold transition"><span>🏠 Tableau de bord</span></a>
+        <a href="/eleve/grades" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition"><span>📊 Mes Notes</span></a>
+        <a href="/eleve/assignments" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition"><span>📝 Devoirs & Tâches</span></a>
+        <a href="/eleve/courses" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition"><span>📚 Mes Cours</span></a>
+        <a href="/eleve/schedule" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition"><span>📅 Emploi du temps</span></a>
+      </nav>
+    </div>
+    <div>
+      <form action="/logout" method="POST">
+        {{ csrfField() }}
+        <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 text-red-600 font-semibold transition text-sm"><span>🚪 Déconnexion</span></button>
+      </form>
+    </div>
+  </aside>
+
+  <!-- Contenu Principal -->
+  <main class="flex-1 p-8 overflow-y-auto">
+    <header class="mb-8">
+      <h2 class="text-2xl font-bold tracking-tight">Bonjour, {{ user.fullName }}</h2>
+      <p class="text-sm text-neutral-500">Voici un aperçu de vos activités et performances scolaires.</p>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Carte Moyenne Générale -->
+      <div class="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm">
+        <h3 class="font-bold text-neutral-400 text-xs uppercase tracking-wider mb-2">Moyenne Générale</h3>
+        <p class="text-4xl font-black text-red-600">{{ user.averageGrade || '0.0' }}<span class="text-lg text-neutral-400">/20</span></p>
+      </div>
+
+      <!-- Carte Prochain Devoir -->
+      <div class="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm col-span-2 flex flex-col justify-between">
+        <div>
+          <h3 class="font-bold text-neutral-400 text-xs uppercase tracking-wider mb-2">Prochain devoir à rendre</h3>
+          @if(nextAssignment)
+            <div class="mb-4">
+              <p class="font-bold text-lg text-neutral-800">{{ nextAssignment.title }}</p>
+              <p class="text-sm text-neutral-500 mt-1">{{ nextAssignment.description || 'Aucune description fournie.' }}</p>
+            </div>
+            <div class="pt-3 border-t border-neutral-100 flex justify-between items-center text-xs">
+              <span class="font-medium text-red-600 bg-red-50 px-2.5 py-1 rounded-lg">
+  Limite : {{ nextAssignment.dueDate }}
+</span>
+              <a href="/eleve/assignments" class="font-bold text-neutral-900 hover:underline">Voir tous les devoirs &rarr;</a>
+            </div>
+          @else
+            <p class="text-sm text-neutral-400 py-2">Aucun devoir en attente pour le moment. Bon travail !</p>
+          @endif
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

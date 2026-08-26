@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tableau de bord Enseignant - GSM Cams</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-neutral-50 text-neutral-900 font-sans antialiased min-h-screen flex">
+
+  <!-- Sidebar de navigation -->
+  <aside class="w-64 bg-white border-r border-neutral-200 hidden md:flex flex-col justify-between p-6">
+    <div>
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center font-bold text-lg shadow-md">
+          GSM
+        </div>
+        <div>
+          <h1 class="font-bold text-sm tracking-wide">GSM Cams</h1>
+          <p class="text-xs text-neutral-500">Espace Enseignant</p>
+        </div>
+      </div>
+
+      <nav class="space-y-1.5 text-sm font-medium">
+        <a href="/enseignant/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 text-red-600 font-semibold transition">
+          <span>🏠 Tableau de bord</span>
+        </a>
+        <a href="/enseignant/courses" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition">
+          <span>📚 Mes Cours</span>
+        </a>
+        <a href="/enseignant/assignments" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition">
+          <span>📝 Devoirs & Tâches</span>
+        </a>
+        <a href="/enseignant/grades" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition">
+          <span>📊 Encodage des Notes</span>
+        </a>
+        <a href="/enseignant/attendances" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-100 text-neutral-600 transition">
+          <span>👥 Présences</span>
+        </a>
+      </nav>
+    </div>
+
+    <div>
+      <form action="/logout" method="POST">
+        {{ csrfField() }}
+        <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 text-red-600 font-semibold transition text-sm">
+          <span>🚪 Déconnexion</span>
+        </button>
+      </form>
+    </div>
+  </aside>
+
+  <!-- Contenu Principal -->
+  <main class="flex-1 p-8 overflow-y-auto">
+    <header class="flex justify-between items-center mb-8">
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight">Tableau de bord Enseignant</h2>
+        <p class="text-sm text-neutral-500">Gérez vos classes, matières et suivez les performances des élèves.</p>
+      </div>
+      <div class="flex items-center gap-3 bg-white border border-neutral-200 px-4 py-2.5 rounded-xl shadow-sm">
+        <div class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold text-xs">
+          Prof
+        </div>
+        <span class="text-sm font-semibold text-neutral-800">Enseignant</span>
+      </div>
+    </header>
+
+    <!-- Cartes de statistiques rapides -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+      <div class="bg-white border border-neutral-200 p-6 rounded-2xl shadow-sm">
+        <p class="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-1">Classes assignées</p>
+        <p class="text-3xl font-extrabold text-neutral-900">{{ assignments.length }}</p>
+      </div>
+      <div class="bg-white border border-neutral-200 p-6 rounded-2xl shadow-sm">
+        <p class="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-1">Actions rapides</p>
+        <div class="flex gap-2 mt-2">
+          <a href="/enseignant/grades" class="text-xs bg-red-600 text-white px-3.5 py-2 rounded-xl font-medium hover:bg-red-700 transition shadow-sm">Encoder des notes</a>
+          <a href="/enseignant/attendances" class="text-xs bg-neutral-900 text-white px-3.5 py-2 rounded-xl font-medium hover:bg-neutral-800 transition shadow-sm">Faire l'appel</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tableau des classes et matières associées -->
+    <section class="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm">
+      <h3 class="text-lg font-bold mb-4">Mes attributions pédagogiques</h3>
+
+      @if(assignments.length > 0)
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-neutral-200 text-xs font-bold uppercase tracking-wider text-neutral-400">
+                <th class="py-3 px-4">Classe</th>
+                <th class="py-3 px-4">Matière / Cours</th>
+                <th class="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-neutral-100 text-sm">
+              @each(assignment in assignments)
+                <tr class="hover:bg-neutral-50 transition">
+                  <td class="py-4 px-4 font-semibold text-neutral-800">
+                    {{ assignment.schoolClass.name }}
+                  </td>
+                  <td class="py-4 px-4 text-neutral-600">
+                    {{ assignment.subject.name }}
+                  </td>
+                  <td class="py-4 px-4 text-right">
+                    <a href="/enseignant/grades" class="text-red-600 font-semibold hover:underline text-xs bg-red-50 px-3.5 py-2 rounded-xl border border-red-100">Gérer les notes &rarr;</a>
+                  </td>
+                </tr>
+              @endeach
+            </tbody>
+          </table>
+        </div>
+      @else
+        <div class="text-center py-12 text-neutral-400">
+          <p class="text-sm">Aucune attribution trouvée dans la base de données pour le moment.</p>
+        </div>
+      @endif
+    </section>
+  </main>
+
+</body>
+</html>
